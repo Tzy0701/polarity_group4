@@ -3,32 +3,22 @@ import streamlit as st
 import pandas as pd
 from nltk.corpus import stopwords
 from textblob import TextBlob
-from langdetect import detect
-from googletrans import Translator
 import nltk
 
-# Initialize stopwords
+
+# Download NLTK stopwords
 nltk.download('stopwords')
-stop_words = set(stopwords.words('english'))  # Load English stopwords
 
 # Preprocessing Function
 def preprocess_text(text_series):
-    translator = Translator()  # Initialize translator once
 
+    stop_words = set(stopwords.words('english'))  # Load English stopwords
     def clean_text(text):
-        try:
-            # Detect language and translate to English
-            detected_lang = detect(text)
-            if detected_lang != 'en':  # Translate only if not already in English
-                text = translator.translate(text, src=detected_lang, dest='en').text
-            # Clean text: remove newlines, lowercase, and filter stopwords
-            text = text.replace("\n", " ").lower()
-            words = text.split()
-            filtered_words = [word for word in words if word not in stop_words]
-            return " ".join(filtered_words)
-        except Exception as e:
-            return f"Error during processing: {str(e)}"  # Handle translation errors
-
+        text = text.replace("\n", " ").lower()  # Clean newlines and lowercase
+        words = text.split()  # Tokenize words
+        filtered_words = [word for word in words if word not in stop_words]  # Remove stopwords
+        return " ".join(filtered_words)
+    
     return text_series.apply(clean_text)
 
 # Sentiment Analysis Function
@@ -55,7 +45,7 @@ def main():
             data = pd.read_csv(uploaded_file)
             st.write("Uploaded Data:")
             st.dataframe(data.head())
-
+            
             if 'text' in data.columns:
                 if st.button("Analyze"):
                     # Preprocess and analyze
