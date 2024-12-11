@@ -19,7 +19,7 @@ def preprocess_text(text_series):
         detected_lang = detect(text)
         translator = Translator()
         translated_text = translator.translate(text, src=detected_lang, dest='fr').text
-        text = translate.replace("\n", " ").lower()  # Clean newlines and lowercase
+        text = translated_text.replace("\n", " ").lower()  # Clean newlines and lowercase
         words = text.split()  # Tokenize words
         filtered_words = [word for word in words if word not in stop_words]  # Remove stopwords
         return " ".join(filtered_words)
