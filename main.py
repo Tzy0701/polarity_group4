@@ -3,7 +3,10 @@ import streamlit as st
 import pandas as pd
 from nltk.corpus import stopwords
 from textblob import TextBlob
+from langdetect import detect
+from googletrans import Translator
 import nltk
+
 
 # Download NLTK stopwords
 nltk.download('stopwords')
@@ -13,7 +16,10 @@ def preprocess_text(text_series):
 
     stop_words = set(stopwords.words('english'))  # Load English stopwords
     def clean_text(text):
-        text = text.replace("\n", " ").lower()  # Clean newlines and lowercase
+        detected_lang = detect(text)
+        translator = Translator()
+        translated_text = translator.translate(text, src=detected_lang, dest='fr').text
+        text = translate.replace("\n", " ").lower()  # Clean newlines and lowercase
         words = text.split()  # Tokenize words
         filtered_words = [word for word in words if word not in stop_words]  # Remove stopwords
         return " ".join(filtered_words)
